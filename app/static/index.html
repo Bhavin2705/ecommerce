@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ShopVault — Premium E-Commerce Store. Browse and shop our curated collection of quality products.">
+    <title>ShopVault — Premium E-Commerce</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛍️</text></svg>">
+</head>
+<body>
+
+    <!-- ========== NAVIGATION ========== -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <a href="#" class="nav-logo" id="logo-link">Shop<span class="logo-accent">Vault</span></a>
+
+            <div class="nav-links">
+                <a href="#" class="nav-link active" id="nav-catalog" data-view="catalog">Catalog</a>
+                <a href="#" class="nav-link" id="nav-cart" data-view="cart">
+                    Cart <span class="cart-badge" id="cart-badge" data-count="0">0</span>
+                </a>
+                <a href="#" class="nav-link hidden" id="nav-orders" data-view="orders">My Orders</a>
+                <a href="#" class="nav-link hidden" id="nav-admin" data-view="admin">Admin</a>
+            </div>
+
+            <div class="nav-auth">
+                <span class="user-email hidden" id="nav-user-email"></span>
+                <button class="btn btn-outline btn-sm" id="nav-login-btn">Sign In</button>
+                <button class="btn btn-primary btn-sm hidden" id="nav-logout-btn">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ========== MAIN CONTENT ========== -->
+    <main id="app-content">
+
+        <!-- ===== AUTH VIEW ===== -->
+        <section id="auth-view" class="view">
+            <div class="auth-container">
+                <div class="auth-card">
+                    <div class="auth-tabs">
+                        <button class="auth-tab active" id="login-tab">Sign In</button>
+                        <button class="auth-tab" id="register-tab">Create Account</button>
+                    </div>
+
+                    <!-- Login Form -->
+                    <form id="login-form" class="auth-form">
+                        <div class="form-group">
+                            <label for="login-email">Email</label>
+                            <input type="email" id="login-email" placeholder="you@example.com" required autocomplete="email">
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password">Password</label>
+                            <input type="password" id="login-password" placeholder="Enter your password" required autocomplete="current-password">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full">Sign In</button>
+                    </form>
+
+                    <!-- Register Form -->
+                    <form id="register-form" class="auth-form hidden">
+                        <div class="form-group">
+                            <label for="register-email">Email</label>
+                            <input type="email" id="register-email" placeholder="you@example.com" required autocomplete="email">
+                        </div>
+                        <div class="form-group">
+                            <label for="register-password">Password</label>
+                            <input type="password" id="register-password" placeholder="Min 8 characters" required minlength="8" autocomplete="new-password">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full">Create Account</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== CATALOG VIEW ===== -->
+        <section id="catalog-view" class="view">
+            <div class="section-container">
+                <div class="section-header">
+                    <h1>Product Catalog</h1>
+                    <p class="section-subtitle">Discover our curated collection of premium products</p>
+                </div>
+                <div id="products-grid" class="products-grid">
+                    <!-- Products rendered here by JS -->
+                </div>
+                <div id="pagination" class="pagination"></div>
+            </div>
+        </section>
+
+        <!-- ===== CART VIEW ===== -->
+        <section id="cart-view" class="view">
+            <div class="section-container">
+                <div class="section-header">
+                    <h1>Shopping Cart</h1>
+                    <p class="section-subtitle">Review your items before checkout</p>
+                </div>
+                <div id="cart-content" class="cart-content">
+                    <!-- Cart items rendered here by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== ORDERS VIEW ===== -->
+        <section id="orders-view" class="view">
+            <div class="section-container">
+                <div class="section-header">
+                    <h1>My Orders</h1>
+                    <p class="section-subtitle">Track and review your past purchases</p>
+                </div>
+                <div id="orders-content" class="orders-content">
+                    <!-- Orders rendered here by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== ADMIN VIEW ===== -->
+        <section id="admin-view" class="view">
+            <div class="section-container">
+                <div class="section-header">
+                    <h1>Admin Panel</h1>
+                    <p class="section-subtitle">Manage your store products</p>
+                </div>
+
+                <!-- Add Product Form -->
+                <div class="admin-card">
+                    <h2>Add New Product</h2>
+                    <form id="add-product-form" class="admin-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="add-sku">SKU</label>
+                                <input type="text" id="add-sku" placeholder="e.g. PROD-001" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="add-name">Product Name</label>
+                                <input type="text" id="add-name" placeholder="e.g. Premium Widget" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="add-description">Description</label>
+                            <textarea id="add-description" placeholder="Describe the product…" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="add-image-url">Image URL</label>
+                            <input type="url" id="add-image-url" placeholder="https://example.com/image.jpg">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="add-price">Price (USD)</label>
+                                <input type="number" id="add-price" placeholder="29.99" step="0.01" min="0" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="add-stock">Stock Quantity</label>
+                                <input type="number" id="add-stock" placeholder="100" min="0" value="0">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Product</button>
+                    </form>
+                </div>
+
+                <!-- Products Management Table -->
+                <div class="admin-card">
+                    <h2>Manage Products</h2>
+                    <div id="admin-products-table" class="admin-table-container">
+                        <!-- Table rendered by JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ========== TOAST CONTAINER ========== -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- ========== EDIT PRODUCT MODAL ========== -->
+    <div id="edit-modal" class="modal hidden">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <h2>Edit Product</h2>
+            <form id="edit-product-form" class="admin-form">
+                <input type="hidden" id="edit-product-id">
+                <div class="form-group">
+                    <label for="edit-name">Product Name</label>
+                    <input type="text" id="edit-name" placeholder="Product name" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-description">Description</label>
+                    <textarea id="edit-description" placeholder="Describe the product…" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="edit-image-url">Image URL</label>
+                    <input type="url" id="edit-image-url" placeholder="https://example.com/image.jpg">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-price">Price (USD)</label>
+                        <input type="number" id="edit-price" placeholder="29.99" step="0.01" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-stock">Stock Quantity</label>
+                        <input type="number" id="edit-stock" placeholder="100" min="0">
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-outline" id="edit-cancel-btn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========== SCRIPTS ========== -->
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/auth.js"></script>
+    <script src="/static/js/products.js"></script>
+    <script src="/static/js/cart.js"></script>
+
+    <script>
+    (function () {
+        'use strict';
+
+        /* ============================================================
+           SPA Navigation
+           ============================================================ */
+        function showView(viewName) {
+            // Hide all views
+            var views = document.querySelectorAll('.view');
+            for (var i = 0; i < views.length; i++) {
+                views[i].classList.remove('active');
+            }
+
+            // Show target view
+            var target = document.getElementById(viewName + '-view');
+            if (target) target.classList.add('active');
+
+            // Update nav active state
+            var links = document.querySelectorAll('.nav-link');
+            for (var j = 0; j < links.length; j++) {
+                links[j].classList.remove('active');
+            }
+            var activeLink = document.getElementById('nav-' + viewName);
+            if (activeLink) activeLink.classList.add('active');
+
+            // Scroll to top on view change
+            window.scrollTo(0, 0);
+
+            // Load data when switching views
+            if (viewName === 'catalog' && window.Products) {
+                window.Products.loadProducts();
+            }
+            if (viewName === 'cart' && window.Cart) {
+                window.Cart.renderCart();
+            }
+            if (viewName === 'orders') {
+                loadOrders();
+            }
+            if (viewName === 'admin' && window.Products) {
+                window.Products.loadAdminProducts();
+            }
+        }
+
+        // Make showView globally accessible (used by auth.js, cart.js, etc.)
+        window.showView = showView;
+
+        /* ============================================================
+           Orders — inline since we don't have a separate orders.js
+           ============================================================ */
+
+        var currencyFmt = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD'
+        });
+
+        async function loadOrders() {
+            var container = document.getElementById('orders-content');
+            if (!container) return;
+
+            // Check auth
+            if (!window.API.getAccessToken()) {
+                container.replaceChildren();
+                var authMsg = document.createElement('div');
+                authMsg.className = 'empty-state';
+                var authIcon = document.createElement('div');
+                authIcon.className = 'empty-icon';
+                authIcon.textContent = '🔒';
+                var authText = document.createElement('p');
+                authText.textContent = 'Please sign in to view your orders.';
+                authMsg.appendChild(authIcon);
+                authMsg.appendChild(authText);
+                container.appendChild(authMsg);
+                return;
+            }
+
+            try {
+                var orders = await window.API.apiFetch('/orders/me');
+                renderOrders(orders, container);
+            } catch (err) {
+                window.API.showToast(err.message || 'Failed to load orders', 'error');
+            }
+        }
+
+        function renderOrders(orders, container) {
+            container.replaceChildren(); // Safe clear
+
+            if (!orders || orders.length === 0) {
+                var empty = document.createElement('div');
+                empty.className = 'empty-state';
+                var emptyIcon = document.createElement('div');
+                emptyIcon.className = 'empty-icon';
+                emptyIcon.textContent = '📦';
+                var emptyText = document.createElement('p');
+                emptyText.textContent = 'No orders yet. Start shopping!';
+                empty.appendChild(emptyIcon);
+                empty.appendChild(emptyText);
+                container.appendChild(empty);
+                return;
+            }
+
+            for (var i = 0; i < orders.length; i++) {
+                var order = orders[i];
+                var card = document.createElement('div');
+                card.className = 'order-card';
+
+                // Header
+                var header = document.createElement('div');
+                header.className = 'order-card-header';
+
+                // Order ID (truncated)
+                var orderId = document.createElement('span');
+                orderId.className = 'order-id';
+                var idStr = String(order.id || order.order_id || '');
+                orderId.textContent = 'Order #' + idStr.substring(0, 8);
+
+                // Date
+                var dateEl = document.createElement('span');
+                dateEl.className = 'order-date';
+                if (order.created_at) {
+                    var d = new Date(order.created_at);
+                    dateEl.textContent = d.toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                } else {
+                    dateEl.textContent = '';
+                }
+
+                // Status badge
+                var statusBadge = document.createElement('span');
+                var status = (order.status || 'pending').toLowerCase();
+                statusBadge.className = 'order-status ' + status;
+                statusBadge.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+
+                // Total
+                var totalEl = document.createElement('span');
+                totalEl.className = 'order-total';
+                totalEl.textContent = currencyFmt.format(order.total || 0);
+
+                header.appendChild(orderId);
+                header.appendChild(dateEl);
+                header.appendChild(statusBadge);
+                header.appendChild(totalEl);
+
+                // Items section (expandable)
+                var itemsDiv = document.createElement('div');
+                itemsDiv.className = 'order-items';
+
+                if (order.items && order.items.length > 0) {
+                    for (var j = 0; j < order.items.length; j++) {
+                        var item = order.items[j];
+                        var row = document.createElement('div');
+                        row.className = 'order-item-row';
+
+                        var itemName = document.createElement('span');
+                        itemName.className = 'order-item-name';
+                        itemName.textContent = item.product_name || item.name || ('Product ' + (item.product_id || '').substring(0, 8));
+
+                        var itemDetail = document.createElement('span');
+                        itemDetail.className = 'order-item-detail';
+                        var qty = item.quantity || 0;
+                        var unitPrice = item.unit_price || item.price || 0;
+                        itemDetail.textContent = qty + ' × ' + currencyFmt.format(unitPrice) + ' = ' + currencyFmt.format(qty * unitPrice);
+
+                        row.appendChild(itemName);
+                        row.appendChild(itemDetail);
+                        itemsDiv.appendChild(row);
+                    }
+                }
+
+                // Toggle expand on header click
+                (function (items) {
+                    header.addEventListener('click', function () {
+                        items.classList.toggle('expanded');
+                    });
+                })(itemsDiv);
+
+                card.appendChild(header);
+                card.appendChild(itemsDiv);
+                container.appendChild(card);
+            }
+        }
+
+        // Expose for other modules
+        window.Orders = {
+            loadOrders: loadOrders
+        };
+
+        /* ============================================================
+           Nav Link Click Handlers
+           ============================================================ */
+        var navLinks = document.querySelectorAll('.nav-link[data-view]');
+        for (var k = 0; k < navLinks.length; k++) {
+            (function (link) {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    showView(link.dataset.view);
+                });
+            })(navLinks[k]);
+        }
+
+        var logoLink = document.getElementById('logo-link');
+        if (logoLink) {
+            logoLink.addEventListener('click', function (e) {
+                e.preventDefault();
+                showView('catalog');
+            });
+        }
+
+        /* ============================================================
+           Initialize App
+           ============================================================ */
+        document.addEventListener('DOMContentLoaded', function () {
+            window.Auth.initAuth();
+        });
+    })();
+    </script>
+
+</body>
+</html>
