@@ -2,12 +2,17 @@
 import sys
 import os
 
-
 def seed_admin():
     from app.config import get_settings
-    from app.database import SessionLocal
+    from app.database import SessionLocal, engine, Base
     from app.models import User
     from app.auth import hash_password
+
+    # Ensure database tables are created before querying
+    try:
+        Base.metadata.create_all(bind=engine)
+    except Exception as e:
+        print(f"[SEED] Base.metadata.create_all warning: {e}")
 
     settings = get_settings()
     db = SessionLocal()
@@ -39,7 +44,6 @@ def seed_admin():
         db.rollback()
     finally:
         db.close()
-
 
 if __name__ == "__main__":
     seed_admin()
