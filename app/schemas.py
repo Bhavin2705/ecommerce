@@ -4,7 +4,6 @@ from decimal import Decimal
 from typing import List, Optional
 from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
 
-# ---- Auth ----
 class UserRegister(BaseModel):
     email: EmailStr
     password: str = Field(min_length=8, max_length=72)
@@ -20,7 +19,6 @@ class TokenResponse(BaseModel):
 class MessageResponse(BaseModel):
     message: str
 
-# ---- Products ----
 class ProductCreate(BaseModel):
     sku: str = Field(min_length=1, max_length=100)
     name: str = Field(min_length=1, max_length=255)
@@ -59,7 +57,6 @@ class ProductListResponse(BaseModel):
     limit: int
     total: int
 
-# ---- Orders ----
 class OrderItemIn(BaseModel):
     product_id: uuid.UUID
     quantity: int = Field(ge=1)

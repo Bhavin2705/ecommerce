@@ -22,9 +22,7 @@ async def create_order(
     total_amount = Decimal("0.00")
     order_items_data = []
 
-    # Lock and validate products within transaction
     for item in data.items:
-        # SELECT FOR UPDATE to lock the product row
         product = db.query(Product).filter(
             Product.id == item.product_id
         ).with_for_update().first()
@@ -41,7 +39,6 @@ async def create_order(
                 detail=f"Insufficient stock for '{product.name}'. Available: {product.stock_quantity}, Requested: {item.quantity}"
             )
 
-        # Deduct stock
         product.stock_quantity -= item.quantity
 
         line_total = product.price * item.quantity
@@ -54,16 +51,14 @@ async def create_order(
             "product_name": product.name
         })
 
-    # Create order
     order = Order(
         user_id=current_user.id,
         status="completed",
         total_amount=total_amount
     )
     db.add(order)
-    db.flush()  # Get order.id
+    db.flush()
 
-    # Create order items
     for item_data in order_items_data:
         order_item = OrderItem(
             order_id=order.id,
@@ -76,10 +71,8 @@ async def create_order(
     db.commit()
     db.refresh(order)
 
-    # Flush product cache since stock changed
     flush_pattern("products:*")
 
-    # Build response with product names
     items_out = []
     for oi in order.items:
         item_out = OrderItemOut(

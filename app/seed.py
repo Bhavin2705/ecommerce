@@ -1,4 +1,3 @@
-"""Seed script to create initial admin user if none exists."""
 import sys
 import os
 
@@ -8,7 +7,6 @@ def seed_admin():
     from app.models import User
     from app.auth import hash_password
 
-    # Ensure database tables are created before querying
     try:
         Base.metadata.create_all(bind=engine)
     except Exception as e:
@@ -18,7 +16,6 @@ def seed_admin():
     db = SessionLocal()
 
     try:
-        # Check if any admin exists
         admin = db.query(User).filter(User.role == "admin").first()
         if admin:
             print(f"[SEED] Admin already exists: {admin.email}")

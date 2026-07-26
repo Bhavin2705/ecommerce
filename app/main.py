@@ -5,7 +5,6 @@ from app.database import engine, Base
 from app.middleware.security_headers import SecurityHeadersMiddleware
 from app.routers import auth, products, orders
 
-# Create tables as fallback (Alembic is primary)
 try:
     Base.metadata.create_all(bind=engine)
 except Exception:
@@ -19,10 +18,8 @@ app = FastAPI(
     redoc_url="/api/redoc"
 )
 
-# Security headers middleware
 app.add_middleware(SecurityHeadersMiddleware)
 
-# CORS middleware - allow Vercel frontend and localhost for development
 origins = [
     "https://ecommerce-smoky-psi-73.vercel.app",
     "http://localhost:3000",
@@ -40,7 +37,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include API routers
 app.include_router(auth.router, prefix="/api/v1")
 app.include_router(products.router, prefix="/api/v1")
 app.include_router(orders.router, prefix="/api/v1")

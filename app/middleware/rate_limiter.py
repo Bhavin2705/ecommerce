@@ -3,11 +3,10 @@ import time
 
 
 def get_rate_limiter(max_requests: int = 5, window_seconds: int = 60):
-    """Factory that returns a FastAPI dependency for rate limiting."""
     async def rate_limit(request: Request):
         from app.utils.redis_client import redis_client
         if redis_client is None:
-            return  # Skip rate limiting if Redis unavailable
+            return
 
         client_ip = request.client.host if request.client else "unknown"
         key = f"rate_limit:{client_ip}:{request.url.path}"
@@ -17,7 +16,7 @@ def get_rate_limiter(max_requests: int = 5, window_seconds: int = 60):
             if current is not None and int(current) >= max_requests:
                 raise HTTPException(
                     status_code=429,
-                    detail=f"Too many requests. Please try again later."
+                    detail="Too many requests. Please try again later."
                 )
 
             pipe = redis_client.pipeline()
@@ -27,11 +26,10 @@ def get_rate_limiter(max_requests: int = 5, window_seconds: int = 60):
         except HTTPException:
             raise
         except Exception:
-            pass  # Fail open if Redis errors
+            pass
 
     return rate_limit
 
 
-# Pre-configured rate limiters
 login_rate_limit = get_rate_limiter(max_requests=5, window_seconds=60)
 register_rate_limit = get_rate_limiter(max_requests=3, window_seconds=60)

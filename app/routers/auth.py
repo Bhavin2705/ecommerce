@@ -14,7 +14,7 @@ from app.middleware.rate_limiter import login_rate_limit, register_rate_limit
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 COOKIE_NAME = "refresh_token"
-COOKIE_MAX_AGE = 7 * 24 * 60 * 60  # 7 days in seconds
+COOKIE_MAX_AGE = 604800
 
 
 def set_refresh_cookie(response: Response, token: str):
@@ -42,7 +42,6 @@ async def register(
     db: Session = Depends(get_db),
     _rate_limit=Depends(register_rate_limit)
 ):
-    # Check if email already exists
     existing = db.query(User).filter(User.email == data.email).first()
     if existing:
         raise HTTPException(status_code=409, detail="Email already registered")

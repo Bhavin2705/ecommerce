@@ -44,7 +44,6 @@ async def create_product(
     db: Session = Depends(get_db),
     admin: User = Depends(require_admin)
 ):
-    # Check SKU uniqueness
     existing = db.query(Product).filter(Product.sku == data.sku).first()
     if existing:
         raise HTTPException(status_code=409, detail="SKU already exists")
