@@ -10,7 +10,7 @@
     // Module-scoped access token — NEVER stored in localStorage
     let accessToken = null;
 
-    const API_BASE = '/api/v1';
+    const API_BASE = (window.API_BASE_URL || '') + '/api/v1';
 
     /**
      * Store the access token in memory.

@@ -22,8 +22,8 @@ def set_refresh_cookie(response: Response, token: str):
         key=COOKIE_NAME,
         value=token,
         httponly=True,
-        secure=False,  # Set True in production with HTTPS
-        samesite="lax",
+        secure=True,
+        samesite="none",
         max_age=COOKIE_MAX_AGE,
         path="/api/v1/auth"
     )
