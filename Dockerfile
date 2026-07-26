@@ -10,4 +10,4 @@ COPY alembic.ini /app/
 
 EXPOSE 8000
 
-CMD ["sh", "-c", "alembic upgrade head || true && python -m app.seed && uvicorn app.main:app --host 0.0.0.0 --port 8000"]
+CMD ["sh", "-c", "python -m app.seed && uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
